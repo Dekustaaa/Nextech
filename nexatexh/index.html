@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexaTech - Edit Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="navbar">
+
+        <a href="main.html" class="logo">
+            <img src="assets/logo.png" alt="NexaTech Logo">
+            <span>NEXATECH</span>
+        </a>
+
+        <div class="search-box">
+            <span class="search-icon">⌕</span>
+            <input type="search" id="searchInput"
+                placeholder="Cari laptop, aksesoris, layanan...">
+        </div>
+
+        <div class="nav-actions">
+
+            <a href="main.html#produk" class="cart-btn" title="Keranjang">
+                🛒
+            </a>
+
+            <button class="language-btn" id="languageBtn">
+                ID
+            </button>
+
+            <a href="main.html" class="logout-top">
+                ⇥ Keluar
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <main class="profile-container">
+
+        <section class="profile-card">
+
+            <div class="profile-header">
+
+                <img src="assets/profile.jpg"
+                     alt="Profile Picture"
+                     class="profile-image"
+                     onerror="this.src='assets/profile.png'">
+
+                <div class="profile-info">
+                    <h2 id="displayUsername">username</h2>
+                    <p id="displayEmail">user@gmail.com</p>
+                </div>
+
+            </div>
+
+
+            <form id="profileForm">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="Masukkan username"
+                        required
+                        minlength="3"
+                    >
+
+                    <small class="error-message" id="usernameError"></small>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Masukkan email"
+                        required
+                    >
+
+                    <small class="error-message" id="emailError"></small>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Masukkan nomor telepon"
+                    >
+
+                    <small class="error-message" id="phoneError"></small>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="password">
+                        New Password
+                        <span>(leave blank if not replaced)</span>
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Masukkan password baru"
+                        >
+
+                        <button type="button" id="togglePassword">
+                            Lihat
+                        </button>
+
+                    </div>
+
+                    <small class="error-message" id="passwordError"></small>
+                </div>
+
+
+                <div id="message"></div>
+
+
+                <button type="submit" class="save-btn">
+                    Simpan
+                </button>
+
+
+                <a href="main.html" class="exit-btn">
+                    Keluar
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script src="js/profile.js"></script>
+
+</body>
+</html>

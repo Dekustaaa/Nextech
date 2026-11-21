@@ -36,6 +36,7 @@ function atas($pageTitle = "Nexatech", $extraHead = "") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
+    <link rel="icon" type="image/svg+xml" href="/PWL-SAS/assets/img/logo.svg">
 
     <!--
         Preferensi publik dimuat sebelum CSS agar tema gelap dan bahasa pilihan

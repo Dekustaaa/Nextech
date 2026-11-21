@@ -9,7 +9,10 @@
     <div class="footer-inner">
         <!-- Identitas merek dan tahun berjalan. -->
         <div class="footer-brand">
-            <a href="/PWL-SAS/mainpage.php" class="footer-logo">Nexatech<span>.</span></a>
+            <a href="/PWL-SAS/mainpage.php" class="footer-logo">
+                <img src="/PWL-SAS/assets/img/logo.svg" alt="" class="footer-logo-mark" width="20" height="18">
+                Nexatech<span>.</span>
+            </a>
             <span class="footer-copy">&copy; <?php echo date('Y'); ?> Nexatech. Teknologi untuk ide besarmu.</span>
         </div>
         <!-- Tautan cepat ke alur utama toko. -->

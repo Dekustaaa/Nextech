@@ -57,9 +57,7 @@ atas("Masuk - Nexatech");
         <section class="auth-form">
             <div class="auth-form-inner">
                 <div class="auth-brand">
-                    <span class="brand-mark">
-                        <i data-lucide="wrench" class="w-[19px] h-[19px]"></i>
-                    </span>
+                    <img src="/PWL-SAS/assets/img/logo.svg" alt="" class="brand-logo" width="34" height="31">
                     <span class="brand-text">Nexatech<span>.</span></span>
                 </div>
 

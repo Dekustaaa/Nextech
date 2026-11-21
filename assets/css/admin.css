@@ -105,10 +105,16 @@ button {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    color: #fff;
+    border: 1px solid rgba(37, 99, 235, 0.16);
     border-radius: 12px;
-    background: linear-gradient(145deg, #3b82f6 0%, #1d4ed8 100%);
-    box-shadow: 0 12px 24px -12px rgba(37, 99, 235, 0.9);
+    background: #fff;
+    box-shadow: 0 12px 24px -14px rgba(15, 23, 42, 0.45);
+}
+
+.admin-brand-mark img {
+    width: 34px;
+    height: auto;
+    object-fit: contain;
 }
 
 .admin-brand-text {
@@ -843,10 +849,16 @@ button {
     height: 39px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.26);
+    border: 1px solid rgba(255, 255, 255, 0.34);
     border-radius: 11px;
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(8px);
+}
+
+.admin-login-brand-mark img {
+    width: 28px;
+    height: auto;
+    object-fit: contain;
 }
 
 .admin-login-brand-text {

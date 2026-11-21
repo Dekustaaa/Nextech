@@ -50,9 +50,7 @@ $mobileActive = function ($key) use ($activeNav) {
     <div class="header-inner">
         <!-- Logo selalu mengarah ke beranda agar konsisten di semua halaman. -->
         <a href="/PWL-SAS/mainpage.php" class="brand" aria-label="Nexatech - Beranda">
-            <span class="brand-mark">
-                <i data-lucide="wrench" class="w-[19px] h-[19px]"></i>
-            </span>
+            <img src="/PWL-SAS/assets/img/logo.svg" alt="" class="brand-logo" width="34" height="31">
             <span class="brand-text">Nexatech<span>.</span></span>
         </a>
 

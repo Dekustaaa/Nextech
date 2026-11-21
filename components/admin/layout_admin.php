@@ -65,6 +65,7 @@ function admin_atas($judul, $desc, $halaman) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title><?php echo htmlspecialchars($judul); ?> - Nexatech Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/PWL-SAS/assets/img/logo.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -113,7 +114,7 @@ function admin_atas($judul, $desc, $halaman) {
     <aside id="admin-sidebar" class="admin-sidebar">
         <a href="dashboard.php" class="admin-brand" aria-label="Nexatech Admin - Dashboard">
             <span class="admin-brand-mark">
-                <i data-lucide="wrench" class="w-5 h-5"></i>
+                <img src="/PWL-SAS/assets/img/logo.svg" alt="" width="36" height="33">
             </span>
             <span>
                 <span class="admin-brand-text">Nexatech<span>.</span></span>

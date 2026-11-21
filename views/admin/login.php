@@ -17,6 +17,7 @@ unset($_SESSION["auth_pesan"]);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>Login Admin - Nexatech</title>
+    <link rel="icon" type="image/svg+xml" href="/PWL-SAS/assets/img/logo.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,7 +46,7 @@ unset($_SESSION["auth_pesan"]);
         <aside class="admin-login-visual">
             <a href="/PWL-SAS/mainpage.php" class="admin-login-brand">
                 <span class="admin-login-brand-mark">
-                    <i data-lucide="wrench"></i>
+                    <img src="/PWL-SAS/assets/img/logo.svg" alt="" width="30" height="27">
                 </span>
                 <span class="admin-login-brand-text">Nexatech<span>.</span></span>
             </a>

@@ -60,10 +60,10 @@ while ($row = mysqli_fetch_assoc($query)) {
     ];
 }
 
-$mark_technician_available = array_values(array_filter($semua_teknisi, function ($t) {
+$available_techs = array_values(array_filter($semua_teknisi, function ($t) {
     return $t['online'];
 }));
-$teknisi_tampil = $mark_technician_available;
+$teknisi_tampil = $available_techs;
 
 /* ------------------------------------------------------------------
  |  LAYANAN
@@ -335,10 +335,10 @@ page_start('Booking Teknisi - Nexatech', $extraHead);
                             <div class="input-wrap">
                                 <i data-lucide="user-round" class="field-icon"></i>
                                 <select id="technician" name="technician_id" class="field-input field-select" required>
-                                    <?php if (empty($mark_technician_available)) { ?>
+                                    <?php if (empty($available_techs)) { ?>
                                         <option value="0">Pilih otomatis</option>
                                     <?php } ?>
-                                    <?php foreach ($mark_technician_available as $t) { ?>
+                                    <?php foreach ($available_techs as $t) { ?>
                                         <option value="<?php echo (int)$t['id']; ?>"
                                             <?php echo $teknisi_awal_id === (int)$t['id'] ? 'selected' : ''; ?>>
                                             <?php echo htmlspecialchars($t['nama']); ?> - <?php echo htmlspecialchars($t['spesialis']); ?>

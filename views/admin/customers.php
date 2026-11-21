@@ -2,7 +2,7 @@
 /**
  * Halaman daftar pelanggan (admin).
  *
- * Mengambil pengguna ber-role user melalui ambil_pelanggan(): nama, alamat,
+ * Mengambil pengguna ber-role user melalui get_customers(): nama, alamat,
  * email, telepon, dan jumlah pesanan. Tabel menyediakan tombol "Lihat" menuju
  * customer_detail.php?id=... untuk melihat profil dan riwayat belanja.
  */
@@ -13,12 +13,12 @@ require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
 // Daftar pelanggan hanya untuk admin.
-cek_admin();
+require_admin();
 
 // Query pelanggan (role user) beserta jumlah pesanannya.
-$pelanggan = ambil_pelanggan($conn);
+$pelanggan = get_customers($conn);
 
-admin_atas("Pelanggan", "Lihat profil dan aktivitas belanja tiap pelanggan.", "customers.php");
+admin_start("Pelanggan", "Lihat profil dan aktivitas belanja tiap pelanggan.", "customers.php");
 ?>
 <div class="bg-white rounded-2xl border border-slate-100 p-5">
     <h2 class="font-bold text-slate-900 mb-4">Daftar pelanggan (<?php echo count($pelanggan); ?>)</h2>
@@ -68,6 +68,6 @@ admin_atas("Pelanggan", "Lihat profil dan aktivitas belanja tiap pelanggan.", "c
         </table>
     </div>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

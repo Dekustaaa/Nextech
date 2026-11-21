@@ -5,14 +5,14 @@
  * Kenapa file ini dipakai?
  * - Header dan footer publik sebelumnya disalin di banyak halaman. Salinan itu
  *   membuat perubahan menu harus dilakukan berkali-kali dan gampang berbeda.
- * - Sekarang halaman publik cukup memanggil atas() di awal dan bawah() di akhir.
+ * - Sekarang halaman publik cukup memanggil page_start() di awal dan page_end() di akhir.
  * - CSS/JS bersama dimuat dari folder /assets agar lokasi aset konsisten.
  *
  * Cara pakai singkat:
  *   $GLOBALS['activeNav'] = 'booking';          // menandai menu yang aktif
- *   atas('Judul Halaman', $extraHead);          // buka <html> ... <main>
+ *   page_start('Judul Halaman', $extraHead);          // buka <html> ... <main>
  *   ... isi halaman ...
- *   bawah($extraScripts);                       // tutup </main>, footer, </html>
+ *   page_end($extraScripts);                       // tutup </main>, footer, </html>
  */
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -26,8 +26,8 @@ if (session_status() === PHP_SESSION_NONE) {
  * @param string $pageTitle Judul tab browser.
  * @param string $extraHead HTML tambahan untuk <head> (meta, CSS khusus halaman).
  */
-function atas($pageTitle = "Nexatech", $extraHead = "") {
-    // Nilai ini diisi halaman sebelum memanggil atas(), misalnya 'home' atau 'booking'.
+function page_start($pageTitle = "Nexatech", $extraHead = "") {
+    // Nilai ini diisi halaman sebelum memanggil page_start(), misalnya 'home' atau 'booking'.
     $activeNav = $GLOBALS['activeNav'] ?? '';
 ?>
 <!DOCTYPE html>
@@ -103,7 +103,7 @@ function atas($pageTitle = "Nexatech", $extraHead = "") {
  * @param string $extraScripts Script khusus halaman yang harus dimuat setelah
  *                             theme.js, misalnya data JSON + technician.js.
  */
-function bawah($extraScripts = "") {
+function page_end($extraScripts = "") {
 ?>
 </main>
 <?php // Footer bersama agar tautan dan copyright konsisten di seluruh halaman. ?>

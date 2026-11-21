@@ -6,7 +6,7 @@
  * memakai prepared statement. Halaman menampilkan foto, harga, badge, ringkasan
  * rating, form rating/ulasan (khusus pengguna login), dan daftar ulasan. ID yang
  * tidak valid atau produk yang tidak ditemukan akan diarahkan ke mainpage.php.
- * Form rating mengirim data ke actions/simpan_rating.php.
+ * Form rating mengirim data ke actions/save_rating.php.
  */
 session_start();
 require_once __DIR__ . "/../../config/database.php";
@@ -40,25 +40,25 @@ if (!$row) {
 }
 
 // Data rating: ringkasan agregat, seluruh ulasan, dan rating milik user yang sedang login (jika ada).
-$ringkasan = ambil_ringkasan_rating($conn, $id);
-$ulasan = ambil_ulasan_produk($conn, $id);
+$ringkasan = get_rating_summary($conn, $id);
+$ulasan = get_product_reviews($conn, $id);
 $rating_saya = null;
 if (isset($_SESSION["user_id"])) {
-    $rating_saya = ambil_rating_user($conn, $id, $_SESSION["user_id"]);
+    $rating_saya = get_user_rating($conn, $id, $_SESSION["user_id"]);
 }
 
 // Nilai default 0 dipakai bila produk belum punya rating sama sekali.
 $rata = $ringkasan["rata_rata"] ? round((float)$ringkasan["rata_rata"], 1) : 0;
 $jumlah_rating = (int)$ringkasan["jumlah"];
 
-// Flash message hasil simpan rating dari actions/simpan_rating.php, ditampilkan sekali.
+// Flash message hasil simpan rating dari actions/save_rating.php, ditampilkan sekali.
 $pesan = $_SESSION["rating_pesan"] ?? "";
 $status = $_SESSION["rating_status"] ?? "ok";
 unset($_SESSION["rating_pesan"]);
 unset($_SESSION["rating_status"]);
 
 $activeNav = 'products';
-atas("Detail Produk - " . $row["product_name"]);
+page_start("Detail Produk - " . $row["product_name"]);
 ?>
 
 <div class="page-wrap page-wrap-narrow">
@@ -246,7 +246,7 @@ atas("Detail Produk - " . $row["product_name"]);
 
                 <?php if (isset($_SESSION["user_id"])) { ?>
                     <!-- Rating hanya untuk user login; product_id dikirim hidden, rating & ulasan diisi user. -->
-                    <form action="/PWL-SAS/actions/simpan_rating.php" method="POST" class="mt-4 space-y-3.5 rounded-2xl border border-slate-200 p-4">
+                    <form action="/PWL-SAS/actions/save_rating.php" method="POST" class="mt-4 space-y-3.5 rounded-2xl border border-slate-200 p-4">
                         <input type="hidden" name="product_id" value="<?php echo $id; ?>">
                         <div>
                             <p class="mb-2 text-[11px] font-semibold text-slate-700"><?php echo $rating_saya ? "Ubah rating kamu" : "Beri rating"; ?></p>
@@ -335,6 +335,6 @@ atas("Detail Produk - " . $row["product_name"]);
     </section>
 </div>
 <?php
-bawah();
+page_end();
 mysqli_close($conn);
 ?>

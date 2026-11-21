@@ -5,7 +5,7 @@
  * Memuat daftar layanan (dropdown), teknisi berstatus "tersedia" yang diurutkan
  * dari rating tertinggi, serta 5 booking terbaru untuk panel aktivitas. Form di
  * kiri mengirim permintaan ke actions/booking.php; hasilnya dilaporkan lewat
- * flash message "pesan_booking" (pasangan status + teks). Fungsi waktu_lalu()
+ * flash message "pesan_booking" (pasangan status + teks). Fungsi time_ago()
  * dipakai untuk menampilkan umur aktivitas dalam bahasa Indonesia.
  */
 session_start();
@@ -13,8 +13,8 @@ require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../components/landing/layout.php";
 
-// Halaman ini hanya untuk pengguna login; tamu akan diarahkan ke form login oleh cek_login().
-cek_login();
+// Halaman ini hanya untuk pengguna login; tamu akan diarahkan ke form login oleh require_login().
+require_login();
 
 // ---------- Data layanan (untuk dropdown) ----------
 // Diambil sekali di awal agar tidak query berulang saat merender <option>.
@@ -47,7 +47,7 @@ while ($row = mysqli_fetch_assoc($q)) {
 
 // ---------- Fungsi: "5 menit lalu" ----------
 // Mengubah timestamp DB menjadi teks relatif untuk kolom aktivitas.
-function waktu_lalu($waktu) {
+function time_ago($waktu) {
     $selisih = time() - strtotime($waktu);
 
     if ($selisih < 60)       { return "Baru saja"; }
@@ -70,7 +70,7 @@ $pesan = $_SESSION['pesan_booking'] ?? null;
 unset($_SESSION['pesan_booking']);
 
 $activeNav = 'booking';
-atas("Booking Teknisi - Nexatech");
+page_start("Booking Teknisi - Nexatech");
 ?>
 
 <div class="page-wrap page-wrap-narrow">
@@ -243,7 +243,7 @@ atas("Booking Teknisi - Nexatech");
                                     #<?php echo htmlspecialchars($a['no_booking']); ?>
                                     &bull; <?php echo htmlspecialchars($a['technician_name'] ?: 'Belum ada teknisi'); ?>
                                 </p>
-                                <p class="mt-0.5 text-[9px] text-slate-400"><?php echo waktu_lalu($a['created_at']); ?></p>
+                                <p class="mt-0.5 text-[9px] text-slate-400"><?php echo time_ago($a['created_at']); ?></p>
                             </div>
                             <span class="th-badge <?php echo $badge_status[$a['status']] ?? 'th-badge-slate'; ?> self-start">
                                 <?php echo htmlspecialchars($a['status']); ?>
@@ -255,4 +255,4 @@ atas("Booking Teknisi - Nexatech");
         </aside>
     </div>
 </div>
-<?php bawah(); ?>
+<?php page_end(); ?>

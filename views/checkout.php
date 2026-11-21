@@ -5,7 +5,7 @@
  * Merangkum produk dan layanan dari session, menghitung subtotal/total di sisi
  * tampilan, lalu menampilkan form pembayaran. Nomor order sementara dibuat dari
  * tanggal (TH-ymd) dan dikirim bersama total ke actions/payment.php. Pengguna
- * yang belum login diarahkan oleh cek_login(), dan keranjang kosong langsung
+ * yang belum login diarahkan oleh require_login(), dan keranjang kosong langsung
  * dikembalikan ke cart.php.
  */
 session_start();
@@ -13,8 +13,8 @@ require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../components/landing/layout.php";
 
-// Halaman ini wajib login; cek_login() akan redirect ke halaman login bila session user kosong.
-cek_login();
+// Halaman ini wajib login; require_login() akan redirect ke halaman login bila session user kosong.
+require_login();
 
 // Pesan dari actions/payment.php bila hidden input pembayaran tidak valid.
 $checkoutError = $_SESSION["checkout_error"] ?? "";
@@ -77,7 +77,7 @@ $total    = $subtotal;
 $no_order = "TH-" . date("ymd");
 
 $activeNav = 'cart';
-atas("Checkout - Nexatech");
+page_start("Checkout - Nexatech");
 ?>
 
 <div class="page-wrap page-wrap-narrow">
@@ -247,6 +247,6 @@ atas("Checkout - Nexatech");
     </div>
 </div>
 <?php
-bawah();
+page_end();
 mysqli_close($conn);
 ?>

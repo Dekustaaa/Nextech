@@ -68,7 +68,7 @@ $teknisi_tampil = $mark_technician_available;
 /* ------------------------------------------------------------------
  |  LAYANAN
  * ------------------------------------------------------------------ */
-$layanan = ambil_services($conn);
+$layanan = get_services($conn);
 
 /* ------------------------------------------------------------------
  |  FLASH MESSAGE
@@ -148,7 +148,7 @@ $GLOBALS['activeNav'] = 'booking';
 $extraHead = '<meta name="description" content="Pesan teknisi profesional untuk kebutuhan perangkat Anda. Pilih teknisi, layanan, jadwal, dan kirim permintaan dalam satu halaman.">'
     . '<link rel="stylesheet" href="/PWL-SAS/assets/css/technician.css?v=' . filemtime(__DIR__ . '/../../assets/css/technician.css') . '">';
 
-atas('Booking Teknisi - Nexatech', $extraHead);
+page_start('Booking Teknisi - Nexatech', $extraHead);
 ?>
 
 
@@ -704,5 +704,5 @@ atas('Booking Teknisi - Nexatech', $extraHead);
 $extraScripts = '<script>window.TECHHUB_BOOKING = ' . ($data_js_json ?: '{}') . ';</script>'
     . '<script src="/PWL-SAS/assets/js/technician.js?v=' . filemtime(__DIR__ . '/../../assets/js/technician.js') . '"></script>';
 
-bawah($extraScripts);
+page_end($extraScripts);
 ?>

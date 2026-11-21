@@ -69,10 +69,10 @@ if (isset($_GET['budget']) && $_GET['budget'] != '') {
 // Daftar kategori untuk dropdown
 $daftar_kategori = mysqli_query($conn, "SELECT * FROM categories");
 // Rating dipakai untuk bintang pada kartu terbaik dan kartu alternatif.
-$rating_produk = ambil_semua_rating($conn);
+$rating_produk = get_all_ratings($conn);
 
 $activeNav = 'nexsearch';
-atas("Nexsearch - Cari Sesuai Budget - Nexatech");
+page_start("Nexsearch - Cari Sesuai Budget - Nexatech");
 ?>
 
 <div class="page-wrap page-wrap-narrow">
@@ -319,4 +319,4 @@ atas("Nexsearch - Cari Sesuai Budget - Nexatech");
 
     <?php } ?>
 </div>
-<?php bawah(); ?>
+<?php page_end(); ?>

@@ -7,7 +7,7 @@
  * terbaru untuk dashboard. Logika sinkronisasi status teknisi dipusatkan di
  * sini agar action booking tidak menulis query sendiri.
  */
-function ambil_teknisi($conn) {
+function get_technicians($conn) {
     // Hanya teknisi tersedia, diurutkan rating tertinggi supaya rekomendasi terbaik muncul lebih dulu.
     $query = mysqli_query($conn, "SELECT * FROM technicians WHERE status = 'tersedia' ORDER BY rating DESC");
     $data = [];
@@ -17,32 +17,32 @@ function ambil_teknisi($conn) {
     return $data;
 }
 
-function ambil_teknisi_otomatis($conn) {
+function get_auto_technician($conn) {
     // LIMIT 1 mengambil kandidat teratas untuk penugasan otomatis saat user tidak memilih teknisi.
     $query = mysqli_query($conn, "SELECT * FROM technicians WHERE status = 'tersedia' ORDER BY rating DESC LIMIT 1");
     return mysqli_fetch_assoc($query);
 }
 
-function cek_teknisi_tersedia($conn, $id) {
+function is_technician_available($conn, $id) {
     // Dipakai tepat sebelum booking disimpan agar teknisi yang sudah sibuk tidak dipilih.
     $id = (int)$id;
     $query = mysqli_query($conn, "SELECT * FROM technicians WHERE technician_id = $id AND status = 'tersedia'");
     return mysqli_fetch_assoc($query);
 }
 
-function teknisi_sibuk($conn, $id) {
+function mark_technician_busy($conn, $id) {
     // Status disimpan sebagai teks "sibuk"/"tersedia" dan dibaca oleh filter di fungsi-fungsi di atas.
     $id = (int)$id;
     mysqli_query($conn, "UPDATE technicians SET status = 'sibuk' WHERE technician_id = $id");
 }
 
-function teknisi_tersedia($conn, $id) {
+function mark_technician_available($conn, $id) {
     // Dipanggil setelah booking selesai/dibatalkan dan tidak ada pekerjaan aktif lain.
     $id = (int)$id;
     mysqli_query($conn, "UPDATE technicians SET status = 'tersedia' WHERE technician_id = $id");
 }
 
-function bebaskan_teknisi_jika_nganggur($conn, $id, $kecuali_booking_id = 0) {
+function release_idle_technician($conn, $id, $kecuali_booking_id = 0) {
     $id = (int)$id;
     $kecuali_booking_id = (int)$kecuali_booking_id;
     if ($id <= 0) {
@@ -60,11 +60,11 @@ function bebaskan_teknisi_jika_nganggur($conn, $id, $kecuali_booking_id = 0) {
     }
     $row = mysqli_fetch_assoc($query);
     if ((int)($row["jml"] ?? 0) === 0) {
-        teknisi_tersedia($conn, $id);
+        mark_technician_available($conn, $id);
     }
 }
 
-function ambil_booking_terakhir($conn) {
+function get_latest_booking($conn) {
     // LEFT JOIN agar booking tanpa layanan/teknisi tetap tampil di widget; LIMIT 5 untuk ringkasan dashboard.
     $sql = "SELECT b.no_booking, b.status, b.created_at, s.service_name, t.technician_name
             FROM bookings b
@@ -80,7 +80,7 @@ function ambil_booking_terakhir($conn) {
     return $data;
 }
 
-function simpan_booking($conn, $no_booking, $nama, $telepon, $service_id, $technician_id, $alamat, $tanggal, $jam, $keluhan) {
+function save_booking($conn, $no_booking, $nama, $telepon, $service_id, $technician_id, $alamat, $tanggal, $jam, $keluhan) {
     // Dua versi INSERT karena technician_id NULL butuh jumlah placeholder berbeda.
     // Tipe bind mengikuti urutan kolom (s=string, i=integer).
     $service_id = (int)$service_id;
@@ -100,7 +100,7 @@ function simpan_booking($conn, $no_booking, $nama, $telepon, $service_id, $techn
     }
 }
 
-function waktu_lalu($waktu) {
+function time_ago($waktu) {
     // Ubah selisih detik menjadi teks relatif untuk daftar aktivitas booking terbaru.
     $selisih = time() - strtotime($waktu);
     if ($selisih < 60) {

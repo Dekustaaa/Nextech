@@ -14,20 +14,20 @@ require_once __DIR__ . "/../repositories/products.php";
 require_once __DIR__ . "/../validations.php";
 
 // Hanya admin yang boleh menulis data katalog.
-cek_admin();
+require_admin();
 
 // Helper menjaga tipe data tetap konsisten: teks di-trim, kolom angka di-cast ke int.
-$nama = input_teks($_POST, "product_name");
-$kategori = input_angka($_POST, "category_id");
-$harga = input_angka($_POST, "price");
-$stok = input_angka($_POST, "stock");
-$deskripsi = input_teks($_POST, "description");
-$url = input_teks($_POST, "url");
-$badge = input_teks($_POST, "badge");
-$id = input_angka($_POST, "product_id");
+$nama = input_text($_POST, "product_name");
+$kategori = input_number($_POST, "category_id");
+$harga = input_number($_POST, "price");
+$stok = input_number($_POST, "stock");
+$deskripsi = input_text($_POST, "description");
+$url = input_text($_POST, "url");
+$badge = input_text($_POST, "badge");
+$id = input_number($_POST, "product_id");
 
 // Nama dan kategori adalah data minimal agar produk bisa ditampilkan di katalog.
-$error = validasi_produk($_POST);
+$error = validate_product($_POST);
 if ($error !== null) {
     $_SESSION["admin_pesan"] = $error;
     header("Location: /PWL-SAS/views/admin/products.php");
@@ -36,10 +36,10 @@ if ($error !== null) {
 
 // product_id > 0 berasal dari form edit; 0/kosong berarti tambah produk baru.
 if ($id > 0) {
-    ubah_produk($conn, $id, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge);
+    update_product($conn, $id, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge);
     $_SESSION["admin_pesan"] = "Produk berhasil diubah.";
 } else {
-    simpan_produk($conn, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge);
+    save_product($conn, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge);
     $_SESSION["admin_pesan"] = "Produk berhasil ditambah.";
 }
 

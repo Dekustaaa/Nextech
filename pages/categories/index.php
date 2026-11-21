@@ -23,7 +23,7 @@ require_once __DIR__ . "/../../repositories/ratings.php";
 require_once __DIR__ . "/../../components/landing/layout.php";
 
 // Satu query mengambil kategori + relasi brand agar tidak query per kartu.
-$kategori_list = ambil_kategori_dengan_brand($conn);
+$kategori_list = get_categories_with_brands($conn);
 
 // Validasi kategori dari URL; nilai yang tidak dikenal diabaikan.
 $kategori_id = isset($_GET['kategori']) ? (int)$_GET['kategori'] : 0;
@@ -54,16 +54,16 @@ if ($brand_slug !== '' && $brand_aktif === null) {
 }
 
 // Dua daftar: semua produk kategori (untuk hitungan "Semua") dan hasil filter brand.
-$semua_produk_kategori = $selected ? ambil_produk_by_kategori($conn, $selected['category_id']) : [];
-$products = $selected ? ambil_produk_by_kategori($conn, $selected['category_id'], $brand_slug) : [];
-$rating_produk = ambil_semua_rating($conn);
+$semua_produk_kategori = $selected ? get_products_by_category($conn, $selected['category_id']) : [];
+$products = $selected ? get_products_by_category($conn, $selected['category_id'], $brand_slug) : [];
+$rating_produk = get_all_ratings($conn);
 
 // Menandai menu All Product aktif di header bersama.
 $activeNav = 'products';
 $pageTitle = $selected
     ? $selected['category_name'] . " - Kategori & Brand | Nexatech"
     : "Kategori & Brand | Nexatech";
-atas($pageTitle);
+page_start($pageTitle);
 ?>
 <div class="page-wrap">
 
@@ -272,6 +272,6 @@ atas($pageTitle);
     <?php } ?>
 </div>
 <?php
-bawah();
+page_end();
 mysqli_close($conn);
 ?>

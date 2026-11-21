@@ -13,7 +13,7 @@ session_start();
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../validations.php";
 
-cek_login();
+require_login();
 
 // Checkout hanya boleh dipicu dari submit form, bukan akses URL langsung.
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -22,16 +22,16 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 }
 
 // Hidden input tetap harus dicek karena nilainya bisa diubah lewat browser.
-$error = validasi_payment($_POST);
+$error = validate_payment($_POST);
 if ($error !== null) {
     $_SESSION["checkout_error"] = $error;
     header("Location: /PWL-SAS/views/checkout.php");
     exit;
 }
 
-$no_order = input_teks($_POST, "no_order");
-$metode = input_teks($_POST, "metode");
-$total = input_angka($_POST, "total");
+$no_order = input_text($_POST, "no_order");
+$metode = input_text($_POST, "metode");
+$total = input_number($_POST, "total");
 
 // Ringkasan ini dipakai payment_success.php untuk menampilkan detail pembayaran.
 $_SESSION["pesanan"] = [

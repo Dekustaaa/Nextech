@@ -13,16 +13,16 @@ require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../validations.php";
 
-$email = input_teks($_POST, "email");
+$email = input_text($_POST, "email");
 $password = (string)($_POST["password"] ?? "");
 // "asal" menandai form mana yang dipakai, karena admin dan user punya halaman login berbeda.
-$asal = input_teks($_POST, "asal");
+$asal = input_text($_POST, "asal");
 if ($asal === "") {
     $asal = "user";
 }
 
 // Validasi bentuk input sebelum query agar data yang jelas tidak valid tidak diproses lebih jauh.
-$error = validasi_login($_POST);
+$error = validate_login($_POST);
 if ($error !== null) {
     $_SESSION["auth_pesan"] = $error;
     if ($asal == "admin") {
@@ -33,7 +33,7 @@ if ($error !== null) {
     exit;
 }
 
-$user = ambil_user_by_email($conn, $email);
+$user = get_user_by_email($conn, $email);
 
 // Cocokkan kredensial; pesan dibuat umum agar tidak membocorkan email mana yang terdaftar.
 // Catatan: data contoh menyimpan password apa adanya, sehingga dibandingkan langsung (bukan password_verify).
@@ -54,7 +54,7 @@ if ($asal == "admin" && $user["role_id"] != 1) {
     exit;
 }
 
-// Simpan identitas ke session agar cek_login()/cek_admin() bisa memeriksanya di request berikutnya.
+// Simpan identitas ke session agar require_login()/require_admin() bisa memeriksanya di request berikutnya.
 $_SESSION["user_id"] = $user["user_id"];
 $_SESSION["role_id"] = $user["role_id"];
 $_SESSION["nama"] = $user["full_name"];

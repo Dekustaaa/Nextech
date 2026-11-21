@@ -2,7 +2,7 @@
 /**
  * layout_admin.php — kerangka halaman admin Nexatech.
  *
- * Kenapa memakai fungsi admin_atas()/admin_bawah()?
+ * Kenapa memakai fungsi admin_start()/admin_end()?
  * - Sidebar, topbar, breadcrumb, dan header halaman admin selalu sama.
  * - Dengan satu layout, perubahan navigasi cukup dilakukan di file ini.
  * - CSS admin dipusatkan di /assets/css/admin.css dan interaksinya di
@@ -16,7 +16,7 @@
  * @param string $desc    Deskripsi singkat halaman.
  * @param string $halaman Nama file aktif, dipakai untuk menandai menu.
  */
-function admin_atas($judul, $desc, $halaman) {
+function admin_start($judul, $desc, $halaman) {
     // Data akun untuk kartu admin di sidebar dan topbar.
     $nama = $_SESSION["nama"] ?? "Admin Nexatech";
     $email = $_SESSION["email"] ?? "admin@nexatech.id";
@@ -214,7 +214,7 @@ function admin_atas($judul, $desc, $halaman) {
 <?php
 }
 
-function admin_bawah() {
+function admin_end() {
 ?>
         </div>
     </main>

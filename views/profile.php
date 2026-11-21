@@ -2,7 +2,7 @@
 /**
  * Halaman profil pengguna.
  *
- * Memuat data akun berdasarkan user_id di session lewat ambil_user_by_id(),
+ * Memuat data akun berdasarkan user_id di session lewat get_user_by_id(),
  * lalu menampilkannya pada kartu akun dan form edit. Form mengirim perubahan
  * nama, email, telepon, dan password opsional ke actions/save_profile.php;
  * flash message "user_pesan" dipakai untuk konfirmasi setelah penyimpanan.
@@ -13,11 +13,11 @@ require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../components/landing/layout.php";
 
-// Profil hanya untuk pengguna login; cek_login() mengarahkan ke form login bila perlu.
-cek_login();
+// Profil hanya untuk pengguna login; require_login() mengarahkan ke form login bila perlu.
+require_login();
 
 // Ambil data terbaru dari DB supaya form menampilkan nilai yang tersimpan, bukan hanya session.
-$user = ambil_user_by_id($conn, $_SESSION["user_id"]);
+$user = get_user_by_id($conn, $_SESSION["user_id"]);
 // Akun hilang/terhapus: paksa logout agar session lama tidak terus dipakai.
 if (!$user) {
     header("Location: /PWL-SAS/actions/logout.php");
@@ -29,7 +29,7 @@ $pesan = $_SESSION["user_pesan"] ?? "";
 unset($_SESSION["user_pesan"]);
 
 $activeNav = 'profile';
-atas("Profil Saya - Nexatech");
+page_start("Profil Saya - Nexatech");
 ?>
 <div class="page-wrap page-wrap-narrow">
 
@@ -172,6 +172,6 @@ atas("Profil Saya - Nexatech");
     </div>
 </div>
 <?php
-bawah();
+page_end();
 mysqli_close($conn);
 ?>

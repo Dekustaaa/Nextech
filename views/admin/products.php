@@ -4,8 +4,8 @@
  *
  * Menampilkan tabel semua produk beserta kategori, harga, stok, dan rating
  * agregat. Form di kanan dipakai untuk menambah produk baru atau mengedit produk
- * yang dipilih lewat ?edit=, lalu dikirim ke actions/simpan_produk.php. Hapus
- * produk diarahkan ke actions/hapus_produk.php dengan konfirmasi JavaScript.
+ * yang dipilih lewat ?edit=, lalu dikirim ke actions/save_product.php. Hapus
+ * produk diarahkan ke actions/delete_product.php dengan konfirmasi JavaScript.
  * Flash message "admin_pesan" menandakan operasi simpan/hapus berhasil.
  */
 session_start();
@@ -17,24 +17,24 @@ require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
 // Hanya admin yang boleh mengelola katalog.
-cek_admin();
+require_admin();
 
 // Data awal: seluruh produk, kategori untuk dropdown, dan rating agregat per produk.
-$products = ambil_produk($conn);
-$categories = ambil_kategori($conn);
-$rating_produk = ambil_semua_rating($conn);
+$products = get_products($conn);
+$categories = get_categories($conn);
+$rating_produk = get_all_ratings($conn);
 
 $edit = null;
 // Mode edit aktif bila URL membawa ?edit=<product_id>; form kanan akan terisi data produk tersebut.
 if (isset($_GET["edit"])) {
-    $edit = ambil_produk_by_id($conn, $_GET["edit"]);
+    $edit = get_product_by_id($conn, $_GET["edit"]);
 }
 
-// Flash message dari actions/simpan_produk.php atau hapus_produk.php.
+// Flash message dari actions/save_product.php atau delete_product.php.
 $pesan = $_SESSION["admin_pesan"] ?? "";
 unset($_SESSION["admin_pesan"]);
 
-admin_atas("Produk", "Tambah, ubah, dan hapus produk. Kategori diambil dari halaman kategori.", "products.php");
+admin_start("Produk", "Tambah, ubah, dan hapus produk. Kategori diambil dari halaman kategori.", "products.php");
 ?>
 <?php if ($pesan != "") { ?>
     <!-- Notifikasi hasil simpan/hapus, sudah di-escape sebelum ditampilkan. -->
@@ -88,7 +88,7 @@ admin_atas("Produk", "Tambah, ubah, dan hapus produk. Kategori diambil dari hala
                                 <div class="flex gap-2">
                                     <!-- Edit memuat ulang halaman dengan ?edit=; hapus meminta konfirmasi lebih dulu. -->
                                     <a href="products.php?edit=<?php echo $p["product_id"]; ?>" class="bg-brand-50 text-brand-600 text-[11px] font-semibold px-3 py-1.5 rounded-lg">Edit</a>
-                                    <a href="/PWL-SAS/actions/hapus_produk.php?id=<?php echo $p["product_id"]; ?>" onclick="return confirm('Hapus produk ini?')" class="bg-red-50 text-red-600 text-[11px] font-semibold px-3 py-1.5 rounded-lg">Hapus</a>
+                                    <a href="/PWL-SAS/actions/delete_product.php?id=<?php echo $p["product_id"]; ?>" onclick="return confirm('Hapus produk ini?')" class="bg-red-50 text-red-600 text-[11px] font-semibold px-3 py-1.5 rounded-lg">Hapus</a>
                                 </div>
                             </td>
                         </tr>
@@ -97,7 +97,7 @@ admin_atas("Produk", "Tambah, ubah, dan hapus produk. Kategori diambil dari hala
             </table>
         </div>
     </div>
-    <form action="/PWL-SAS/actions/simpan_produk.php" method="POST" class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
+    <form action="/PWL-SAS/actions/save_product.php" method="POST" class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
         <!-- Judul dan isi form mengikuti mode: tambah baru atau edit produk yang dipilih. -->
         <h2 class="font-bold text-slate-900"><?php echo $edit ? "Edit produk" : "Tambah produk"; ?></h2>
         <?php if ($edit) { ?>
@@ -156,6 +156,6 @@ admin_atas("Produk", "Tambah, ubah, dan hapus produk. Kategori diambil dari hala
         <?php } ?>
     </form>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

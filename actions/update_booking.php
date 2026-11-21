@@ -13,15 +13,15 @@ require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../repositories/technicians.php";
 require_once __DIR__ . "/../validations.php";
 
-cek_admin();
+require_admin();
 
 // Nilai 0 atau string kosong berarti field tersebut tidak diubah oleh admin.
-$id = input_angka($_POST, "booking_id");
-$technician_id = input_angka($_POST, "technician_id");
-$status = input_teks($_POST, "status");
+$id = input_number($_POST, "booking_id");
+$technician_id = input_number($_POST, "technician_id");
+$status = input_text($_POST, "status");
 
 // Tolak ID dan status yang tidak valid sebelum menyentuh data booking.
-$error = validasi_update_booking($_POST);
+$error = validate_booking_update($_POST);
 if ($error !== null) {
     $_SESSION["admin_pesan"] = $error;
     header("Location: /PWL-SAS/views/admin/booking.php");
@@ -69,21 +69,21 @@ if (in_array($status_akhir, ["Selesai", "Dibatalkan"], true)) {
     // Booking selesai/batal -> bebaskan teknisi jika tidak ada booking aktif lain.
     if ($teknisi_akhir > 0) {
         // Helper mengecek booking aktif lain dulu, jadi teknisi tidak dilepas jika masih punya pekerjaan.
-        bebaskan_teknisi_jika_nganggur($conn, $teknisi_akhir, $id);
+        release_idle_technician($conn, $teknisi_akhir, $id);
     }
     // Jika teknisi diganti saat penyelesaian, teknisi lama juga perlu dicek.
     if ($technician_id > 0 && $teknisi_lama > 0 && $teknisi_lama !== $teknisi_akhir) {
-        bebaskan_teknisi_jika_nganggur($conn, $teknisi_lama, $id);
+        release_idle_technician($conn, $teknisi_lama, $id);
     }
 } else {
     // Booking masih aktif -> teknisi yang dipakai harus sibuk.
     if ($teknisi_akhir > 0) {
         // Penugasan baru langsung menandai teknisi sibuk agar tidak dipilih booking lain.
-        teknisi_sibuk($conn, $teknisi_akhir);
+        mark_technician_busy($conn, $teknisi_akhir);
     }
     // Jika teknisi diganti, bebaskan teknisi lama jika sudah tidak ada booking aktif.
     if ($technician_id > 0 && $teknisi_lama > 0 && $teknisi_lama !== $teknisi_akhir) {
-        bebaskan_teknisi_jika_nganggur($conn, $teknisi_lama, $id);
+        release_idle_technician($conn, $teknisi_lama, $id);
     }
 }
 

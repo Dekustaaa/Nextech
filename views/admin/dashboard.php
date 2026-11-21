@@ -6,7 +6,7 @@
  * pesanan hari ini, pendapatan bulan ini, teknisi tersedia, pelanggan, produk
  * terlaris, daftar pesanan terbaru, dan layanan populer. $kartu menyusun empat
  * kartu statistik agar markup di bawah cukup di-loop. Halaman hanya bisa dibuka
- * admin (cek_admin) dan memakai layout admin.
+ * admin (require_admin) dan memakai layout admin.
  */
 session_start();
 require_once __DIR__ . "/../../config/database.php";
@@ -14,30 +14,30 @@ require_once __DIR__ . "/../../repositories/dashboard.php";
 require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
-// Semua halaman admin melewati cek_admin(); user biasa akan ditolak/diarahkan.
-cek_admin();
+// Semua halaman admin melewati require_admin(); user biasa akan ditolak/diarahkan.
+require_admin();
 
 // Kumpulkan seluruh metrik dashboard sekali di awal agar markup tinggal menampilkan.
-$total_pesanan = total_pesanan($conn);
-$pesanan_hari_ini = pesanan_hari_ini($conn);
-$pendapatan = pendapatan_bulan_ini($conn);
-$teknisi_total = jumlah_teknisi_total($conn);
-$teknisi_ada = jumlah_teknisi_tersedia($conn);
-$pelanggan = jumlah_pelanggan($conn);
-$total_produk = jumlah_produk($conn);
-$terlaris = produk_terlaris($conn);
-$daftar_pesanan = pesanan_terbaru($conn);
-$daftar_layanan = layanan_populer($conn);
+$total_orders = total_orders($conn);
+$todays_orders = todays_orders($conn);
+$pendapatan = monthly_revenue($conn);
+$teknisi_total = total_technicians($conn);
+$teknisi_ada = available_technicians($conn);
+$pelanggan = total_customers($conn);
+$total_produk = total_products($conn);
+$terlaris = top_products($conn);
+$daftar_pesanan = latest_orders($conn);
+$daftar_layanan = popular_services($conn);
 
 // Susunan kartu: [judul, label badge, nilai utama, keterangan].
 $kartu = [
-    ["Total pesanan", "Semua", number_format($total_pesanan, 0, ",", "."), $pesanan_hari_ini . " pesanan baru hari ini"],
-    ["Pendapatan", "Bulan ini", dash_singkat($pendapatan), "Omzet bulan ini"],
+    ["Total pesanan", "Semua", number_format($total_orders, 0, ",", "."), $todays_orders . " pesanan baru hari ini"],
+    ["Pendapatan", "Bulan ini", format_compact($pendapatan), "Omzet bulan ini"],
     ["Teknisi aktif", "dari " . $teknisi_total, number_format($teknisi_ada, 0, ",", "."), "Siap menerima kunjungan"],
     ["Pelanggan", "Terdaftar", number_format($pelanggan, 0, ",", "."), "Pengguna dengan role user"]
 ];
 
-admin_atas("Dashboard Admin", "Kelola produk, pesanan, teknisi, dan operasional bisnis dari satu tempat.", "dashboard.php");
+admin_start("Dashboard Admin", "Kelola produk, pesanan, teknisi, dan operasional bisnis dari satu tempat.", "dashboard.php");
 ?>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <!-- Pintasan tindakan cepat ke halaman admin yang paling sering dipakai. -->
@@ -92,7 +92,7 @@ admin_atas("Dashboard Admin", "Kelola produk, pesanan, teknisi, dan operasional 
         </div>
         <div class="flex justify-between text-xs text-slate-500">
             <span>Pesanan baru</span>
-            <span class="font-bold text-slate-900"><?php echo $pesanan_hari_ini; ?></span>
+            <span class="font-bold text-slate-900"><?php echo $todays_orders; ?></span>
         </div>
         <div class="flex justify-between text-xs text-slate-500">
             <span>Teknisi tersedia</span>
@@ -145,11 +145,11 @@ admin_atas("Dashboard Admin", "Kelola produk, pesanan, teknisi, dan operasional 
                                 <p class="text-[11px] text-slate-500"><?php echo htmlspecialchars($p["item"]); ?></p>
                             </td>
                             <td class="py-4">
-                                <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo dash_warna_status($p["status"]); ?>">
+                                <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo get_status_color($p["status"]); ?>">
                                     <?php echo htmlspecialchars($p["status"]); ?>
                                 </span>
                             </td>
-                            <td class="py-4 font-bold text-slate-900"><?php echo dash_rupiah($p["total"]); ?></td>
+                            <td class="py-4 font-bold text-slate-900"><?php echo format_rupiah($p["total"]); ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>
@@ -172,7 +172,7 @@ admin_atas("Dashboard Admin", "Kelola produk, pesanan, teknisi, dan operasional 
                     </span>
                     <div class="flex-1 min-w-0">
                         <p class="font-bold text-xs text-slate-900 truncate"><?php echo htmlspecialchars($l["service_name"]); ?></p>
-                        <p class="text-[11px] text-slate-500">Mulai <?php echo dash_rupiah($l["base_price"]); ?></p>
+                        <p class="text-[11px] text-slate-500">Mulai <?php echo format_rupiah($l["base_price"]); ?></p>
                     </div>
                     <span class="bg-brand-50 text-brand-600 text-[11px] font-bold px-3 py-1 rounded-full">
                         <?php echo $l["jumlah"]; ?>
@@ -182,6 +182,6 @@ admin_atas("Dashboard Admin", "Kelola produk, pesanan, teknisi, dan operasional 
         </div>
     </div>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

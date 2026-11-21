@@ -13,15 +13,15 @@ require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../repositories/orders.php";
 require_once __DIR__ . "/../validations.php";
 
-cek_admin();
+require_admin();
 
 // Status pesanan (orders) dan status pembayaran (payments) adalah dua kolom berbeda.
-$id = input_angka($_POST, "order_id");
-$status = input_teks($_POST, "status");
-$bayar = input_teks($_POST, "payment_status");
+$id = input_number($_POST, "order_id");
+$status = input_text($_POST, "status");
+$bayar = input_text($_POST, "payment_status");
 
 // Tolak ID atau status yang tidak dikenal sebelum mengubah database.
-$error = validasi_order_status($_POST);
+$error = validate_order_status($_POST);
 if ($error !== null) {
     $_SESSION["admin_pesan"] = $error;
     header("Location: /PWL-SAS/views/admin/orders.php");
@@ -30,10 +30,10 @@ if ($error !== null) {
 
 // Masing-masing hanya diubah jika nilainya dikirim, sehingga admin bisa mengganti salah satu saja.
 if ($status !== "") {
-    ubah_status_pesanan($conn, $id, $status);
+    update_order_status($conn, $id, $status);
 }
 if ($bayar !== "") {
-    ubah_status_bayar($conn, $id, $bayar);
+    update_payment_status($conn, $id, $bayar);
 }
 
 // Satu flash message untuk kedua perubahan agar daftar pesanan langsung memberi umpan balik.

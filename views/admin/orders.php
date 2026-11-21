@@ -2,10 +2,10 @@
 /**
  * Halaman daftar pesanan (admin).
  *
- * Memuat seluruh pesanan lewat ambil_pesanan() lalu menampilkan status bayar dan
+ * Memuat seluruh pesanan lewat get_orders() lalu menampilkan status bayar dan
  * status paket masing-masing. Setiap baris memiliki form kecil untuk mengubah
  * kedua status tersebut; form dikirim ke actions/order_status.php. Warna badge
- * status ditentukan oleh dash_warna_status() dari repositories/dashboard.php.
+ * status ditentukan oleh get_status_color() dari repositories/dashboard.php.
  */
 session_start();
 require_once __DIR__ . "/../../config/database.php";
@@ -15,16 +15,16 @@ require_once __DIR__ . "/../../components/admin/layout_admin.php";
 require_once __DIR__ . "/../../repositories/dashboard.php";
 
 // Hanya admin yang dapat melihat dan mengubah status pesanan.
-cek_admin();
+require_admin();
 
 // Ambil seluruh pesanan beserta data pelanggannya.
-$pesanan = ambil_pesanan($conn);
+$pesanan = get_orders($conn);
 
 // Pesan hasil update status dari actions/order_status.php.
 $pesan = $_SESSION["admin_pesan"] ?? "";
 unset($_SESSION["admin_pesan"]);
 
-admin_atas("Pesanan", "Lihat status bayar dan status paket, ubah kalau ada yang lunas atau dikirim.", "orders.php");
+admin_start("Pesanan", "Lihat status bayar dan status paket, ubah kalau ada yang lunas atau dikirim.", "orders.php");
 ?>
 <?php if ($pesan != "") { ?>
     <!-- Notifikasi setelah status pesanan diperbarui. -->
@@ -63,12 +63,12 @@ admin_atas("Pesanan", "Lihat status bayar dan status paket, ubah kalau ada yang 
                             <p class="text-[11px] text-slate-500"><?php echo htmlspecialchars($o["payment_method"] ?? "-"); ?></p>
                         </td>
                         <td class="py-4">
-                            <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo dash_warna_status($o["payment_status"] ?? "Pending"); ?>">
+                            <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo get_status_color($o["payment_status"] ?? "Pending"); ?>">
                                 <?php echo htmlspecialchars($o["payment_status"] ?? "Pending"); ?>
                             </span>
                         </td>
                         <td class="py-4">
-                            <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo dash_warna_status($o["status"]); ?>">
+                            <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo get_status_color($o["status"]); ?>">
                                 <?php echo htmlspecialchars($o["status"]); ?>
                             </span>
                         </td>
@@ -100,6 +100,6 @@ admin_atas("Pesanan", "Lihat status bayar dan status paket, ubah kalau ada yang 
         </table>
     </div>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

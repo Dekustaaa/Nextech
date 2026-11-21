@@ -14,12 +14,12 @@ require_once __DIR__ . "/../repositories/categories.php";
 require_once __DIR__ . "/../validations.php";
 
 // Guard admin: selain admin akan diarahkan ke halaman login admin.
-cek_admin();
+require_admin();
 
 // ID berasal dari query string; helper memastikan hanya angka positif yang diproses.
-$id = input_angka($_GET, "id");
-if (validasi_id($id)) {
-    hapus_kategori($conn, $id);
+$id = input_number($_GET, "id");
+if (validate_id($id)) {
+    delete_category($conn, $id);
     $_SESSION["admin_pesan"] = "Kategori berhasil dihapus.";
 }
 

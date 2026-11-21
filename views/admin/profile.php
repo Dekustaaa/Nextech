@@ -5,24 +5,24 @@
  * Memuat akun admin yang sedang login dari session lalu menampilkan form untuk
  * mengganti nama, email, telepon, dan password. Form mengirim data ke
  * actions/save_profile.php, dan pesan "admin_pesan" tampil setelah berhasil.
- * Hanya dapat diakses setelah cek_admin().
+ * Hanya dapat diakses setelah require_admin().
  */
 session_start();
 require_once __DIR__ . "/../../config/database.php";
 require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
-// Profil admin hanya bisa diakses setelah cek_admin().
-cek_admin();
+// Profil admin hanya bisa diakses setelah require_admin().
+require_admin();
 
 // Ambil data terbaru admin yang sedang login berdasarkan session user_id.
-$admin = ambil_user_by_id($conn, $_SESSION["user_id"]);
+$admin = get_user_by_id($conn, $_SESSION["user_id"]);
 
 // Flash message setelah actions/save_profile.php menyimpan perubahan.
 $pesan = $_SESSION["admin_pesan"] ?? "";
 unset($_SESSION["admin_pesan"]);
 
-admin_atas("Profil", "Ganti nama, email, telepon, dan password akun admin.", "profile.php");
+admin_start("Profil", "Ganti nama, email, telepon, dan password akun admin.", "profile.php");
 ?>
 <?php if ($pesan != "") { ?>
     <!-- Konfirmasi perubahan profil admin. -->
@@ -55,6 +55,6 @@ admin_atas("Profil", "Ganti nama, email, telepon, dan password akun admin.", "pr
     </div>
     <button class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold py-3 rounded-xl">Simpan</button>
 </form>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

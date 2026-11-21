@@ -4,8 +4,8 @@
  *
  * Menampilkan kartu semua kategori beserta ikon Lucide dan deskripsinya. Form di
  * kanan menambah kategori baru atau mengedit kategori melalui ?edit=, lalu
- * menyimpannya ke actions/simpan_kategori.php. Penghapusan memakai
- * actions/hapus_kategori.php dengan konfirmasi. Kategori yang dibuat di sini
+ * menyimpannya ke actions/save_category.php. Penghapusan memakai
+ * actions/delete_category.php dengan konfirmasi. Kategori yang dibuat di sini
  * langsung tersedia sebagai pilihan pada form produk.
  */
 session_start();
@@ -15,21 +15,21 @@ require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
 // Halaman ini hanya untuk admin.
-cek_admin();
+require_admin();
 
 // Kategori dipakai untuk daftar kartu sekaligus dropdown/relasi pada produk.
-$categories = ambil_kategori($conn);
+$categories = get_categories($conn);
 
 $edit = null;
 // ?edit=<category_id> mengisi form kanan dengan data kategori yang akan diubah.
 if (isset($_GET["edit"])) {
-    $edit = ambil_kategori_by_id($conn, $_GET["edit"]);
+    $edit = get_category_by_id($conn, $_GET["edit"]);
 }
 
 $pesan = $_SESSION["admin_pesan"] ?? "";
 unset($_SESSION["admin_pesan"]);
 
-admin_atas("Kategori", "Tambah kategori baru, kategori langsung bisa dipilih di form produk.", "categories.php");
+admin_start("Kategori", "Tambah kategori baru, kategori langsung bisa dipilih di form produk.", "categories.php");
 ?>
 <?php if ($pesan != "") { ?>
     <!-- Konfirmasi hasil simpan/hapus kategori dari action. -->
@@ -58,14 +58,14 @@ admin_atas("Kategori", "Tambah kategori baru, kategori langsung bisa dipilih di 
                         <div class="flex gap-2 mt-3">
                             <!-- Edit membuka form dengan data kategori; hapus meminta konfirmasi dulu. -->
                             <a href="categories.php?edit=<?php echo $c["category_id"]; ?>" class="bg-brand-50 text-brand-600 text-[11px] font-semibold px-3 py-1.5 rounded-lg">Edit</a>
-                            <a href="/PWL-SAS/actions/hapus_kategori.php?id=<?php echo $c["category_id"]; ?>" onclick="return confirm('Hapus kategori ini?')" class="bg-red-50 text-red-600 text-[11px] font-semibold px-3 py-1.5 rounded-lg">Hapus</a>
+                            <a href="/PWL-SAS/actions/delete_category.php?id=<?php echo $c["category_id"]; ?>" onclick="return confirm('Hapus kategori ini?')" class="bg-red-50 text-red-600 text-[11px] font-semibold px-3 py-1.5 rounded-lg">Hapus</a>
                         </div>
                     </div>
                 </div>
             <?php } ?>
         </div>
     </div>
-    <form action="/PWL-SAS/actions/simpan_kategori.php" method="POST" class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
+    <form action="/PWL-SAS/actions/save_category.php" method="POST" class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
         <!-- Form berfungsi ganda: tambah kategori baru atau simpan perubahan saat $edit terisi. -->
         <h2 class="font-bold text-slate-900"><?php echo $edit ? "Edit kategori" : "Tambah kategori"; ?></h2>
         <?php if ($edit) { ?>
@@ -95,6 +95,6 @@ admin_atas("Kategori", "Tambah kategori baru, kategori langsung bisa dipilih di 
         <?php } ?>
     </form>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

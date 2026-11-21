@@ -29,7 +29,7 @@ $pesan = "";
 // Aksi hapus dari halaman lama tetap dipertahankan; redirect mencegah submit ganda.
 if (isset($_POST['hapus'])) {
     $id = (int)$_POST['id'];
-    if ($id > 0 && hapus_produk($conn, $id)) {
+    if ($id > 0 && delete_product($conn, $id)) {
         $pesan = "Data berhasil dihapus";
     } else {
         $pesan = "Gagal hapus";
@@ -39,18 +39,18 @@ if (isset($_POST['hapus'])) {
 }
 
 // Data utama beranda: produk (opsional difilter keyword), kategori+brand, dan rating.
-$products = ambil_produk($conn);
+$products = get_products($conn);
 $keyword = trim($_GET['q'] ?? '');
 if ($keyword !== '') {
-    $products = ambil_produk_by_keyword($conn, $keyword);
+    $products = get_products_by_keyword($conn, $keyword);
 }
-$categories = ambil_kategori_dengan_brand($conn);
-$rating_produk = ambil_semua_rating($conn);
+$categories = get_categories_with_brands($conn);
+$rating_produk = get_all_ratings($conn);
 
 // Menandai menu Homepage aktif di header bersama.
 $activeNav = 'home';
 $pageTitle = "Nexatech - Solusi Teknologi & Layanan Teknisi";
-atas($pageTitle);
+page_start($pageTitle);
 ?>
 <div class="page-wrap">
 
@@ -285,6 +285,6 @@ atas($pageTitle);
     </section>
 </div>
 <?php
-bawah();
+page_end();
 mysqli_close($conn);
 ?>

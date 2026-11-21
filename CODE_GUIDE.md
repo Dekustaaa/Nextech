@@ -40,12 +40,12 @@ PWL-SAS/
 ├── repositories/                  # Query database
 ├── components/
 │   ├── landing/
-│   │   ├── layout.php             # atas()/bawah() untuk halaman publik
+│   │   ├── layout.php             # page_start()/page_end() untuk halaman publik
 │   │   ├── header.php             # Header publik tunggal
 │   │   ├── footer.php             # Footer publik tunggal
 │   │   └── sidebar.php            # Sidebar lama (tidak dipakai layout baru)
 │   └── admin/
-│       └── layout_admin.php       # admin_atas()/admin_bawah()
+│       └── layout_admin.php       # admin_start()/admin_end()
 ├── pages/
 │   ├── categories/index.php       # Katalog kategori + brand
 │   └── technician/index.php       # Booking teknisi
@@ -74,14 +74,14 @@ require_once __DIR__ . "/../../components/landing/layout.php";
 
 $activeNav = "products";                 // menu yang disorot di header
 $extraHead = '<link rel="stylesheet" href="/PWL-SAS/assets/css/page.css">';
-atas("Judul - Nexatech", $extraHead);
+page_start("Judul - Nexatech", $extraHead);
 ?>
 
 <section>Isi halaman...</section>
 
 <?php
 $extraScripts = '<script src="/PWL-SAS/assets/js/page.js"></script>';
-bawah($extraScripts);
+page_end($extraScripts);
 ```
 
 Yang terjadi:
@@ -89,14 +89,14 @@ Yang terjadi:
 1. `layout.php` memuat `preferences.js` lebih dulu agar tema/bahasa tersimpan
    langsung aktif, lalu `assets/css/theme.css` dan konfigurasi Tailwind.
 2. `header.php` membaca session untuk status login dan jumlah keranjang.
-3. Halaman mencetak isi di antara `atas()` dan `bawah()`.
-4. `bawah()` memuat `i18n.js`, `theme.js`, footer, lalu script khusus halaman.
+3. Halaman mencetak isi di antara `page_start()` dan `page_end()`.
+4. `page_end()` memuat `i18n.js`, `theme.js`, footer, lalu script khusus halaman.
    Urutan ini penting: kamus bahasa harus siap sebelum komponen lain memakai
    `window.techI18n`.
 
 Halaman teknisi memakai pola ini:
 
-- `pages/technician/index.php` memanggil `atas()`/`bawah()`.
+- `pages/technician/index.php` memanggil `page_start()`/`page_end()`.
 - CSS khusus dimuat lewat `$extraHead` (`assets/css/technician.css`).
 - Data teknisi/layanan dikirim ke JavaScript sebelum `assets/js/technician.js`.
 - Form dikirim ke `actions/technician_booking.php`; aturan input dicek lewat
@@ -106,10 +106,10 @@ Halaman teknisi memakai pola ini:
 
 ## 4. Alur admin
 
-1. Halaman di `views/admin/` memanggil `cek_admin()`.
+1. Halaman di `views/admin/` memanggil `require_admin()`.
 2. Halaman memuat repository yang dibutuhkan.
-3. `admin_atas($judul, $desc, $nama_file)` mencetak sidebar, topbar, dan header.
-4. Isi halaman ditutup dengan `admin_bawah()`.
+3. `admin_start($judul, $desc, $nama_file)` mencetak sidebar, topbar, dan header.
+4. Isi halaman ditutup dengan `admin_end()`.
 5. `assets/js/admin.js` menangani menu mobile, toggle tema, dan ikon Lucide.
 6. Halaman login admin memakai `i18n.js` + `admin.js` langsung karena tidak
    memakai layout dashboard, tetapi tetap mendapat kontrol bahasa/tema.
@@ -123,13 +123,13 @@ ubah status pesanan, dan logout tetap memakai handler di `actions/` yang sama.
 
 Semua aturan validasi form ada di `validations.php`:
 
-- Helper dasar: `input_teks()`, `input_angka()`, `validasi_email()`,
-  `validasi_telepon()`, `validasi_tanggal()`, `validasi_jam()`, `validasi_id()`,
-  dan `validasi_pilihan()`.
-- Validator per form: `validasi_login()`, `validasi_register()`,
-  `validasi_profil()`, `validasi_kategori()`, `validasi_produk()`,
-  `validasi_booking()`, `validasi_rating()`, `validasi_payment()`,
-  `validasi_update_booking()`, dan `validasi_order_status()`.
+- Helper dasar: `input_text()`, `input_number()`, `validate_email()`,
+  `validate_phone()`, `validate_date()`, `validate_time()`, `validate_id()`,
+  dan `validate_choice()`.
+- Validator per form: `validate_login()`, `validate_register()`,
+  `validate_profile()`, `validate_category()`, `validate_product()`,
+  `validate_booking()`, `validate_rating()`, `validate_payment()`,
+  `validate_booking_update()`, dan `validate_order_status()`.
 - Setiap validator mengembalikan `null` bila lolos atau string pesan error bila
   gagal. Action tinggal menampilkan pesan tersebut lewat flash message.
 - Validasi ini hanya memeriksa bentuk input. Pengecekan yang membutuhkan

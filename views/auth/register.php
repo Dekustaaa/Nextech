@@ -16,7 +16,7 @@ unset($_SESSION["auth_pesan"]);
 
 // Halaman auth tidak menyorot menu navigasi tertentu di layout landing.
 $activeNav = '';
-atas("Daftar - Nexatech");
+page_start("Daftar - Nexatech");
 ?>
 <div class="auth-shell">
     <div class="auth-card">
@@ -103,4 +103,4 @@ atas("Daftar - Nexatech");
         </section>
     </div>
 </div>
-<?php bawah(); ?>
+<?php page_end(); ?>

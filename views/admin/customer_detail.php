@@ -14,11 +14,11 @@ require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
 // Hanya admin yang boleh membuka detail pelanggan.
-cek_admin();
+require_admin();
 
 // Ambil ID dari URL dan cast ke int; 0 berarti tidak ada pelanggan yang dipilih.
 $id = (int)($_GET["id"] ?? 0);
-$p = ambil_pelanggan_by_id($conn, $id);
+$p = get_customer_by_id($conn, $id);
 
 // Pelanggan tidak ditemukan: kembali ke daftar daripada menampilkan data kosong.
 if (!$p) {
@@ -27,9 +27,9 @@ if (!$p) {
 }
 
 // Riwayat transaksi pelanggan untuk tabel di kolom kanan.
-$riwayat = ambil_pesanan_pelanggan($conn, $id);
+$riwayat = get_customer_orders($conn, $id);
 
-admin_atas("Profil Pelanggan", "Detail profil dan riwayat belanja " . $p["full_name"] . ".", "customers.php");
+admin_start("Profil Pelanggan", "Detail profil dan riwayat belanja " . $p["full_name"] . ".", "customers.php");
 ?>
 <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
     <div class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-3">
@@ -94,6 +94,6 @@ admin_atas("Profil Pelanggan", "Detail profil dan riwayat belanja " . $p["full_n
         </div>
     </div>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>
 
 

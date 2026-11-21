@@ -7,7 +7,7 @@
  * di sini agar halaman admin tidak menulis SQL dan relasi users/orders tetap
  * konsisten.
  */
-function ambil_pelanggan($conn) {
+function get_customers($conn) {
     // role_id = 2 membatasi hasil ke pelanggan; subquery menghitung order per user tanpa GROUP BY.
     $sql = "SELECT u.user_id, u.full_name, u.email, u.phone_number, u.created_at, up.address, up.date_of_birth,
                    (SELECT COUNT(*) FROM orders o WHERE o.user_id = u.user_id) AS jml_pesanan
@@ -23,7 +23,7 @@ function ambil_pelanggan($conn) {
     return $data;
 }
 
-function ambil_pelanggan_by_id($conn, $id) {
+function get_customer_by_id($conn, $id) {
     // LEFT JOIN profil karena baris user_profiles bisa saja belum lengkap.
     $id = (int)$id;
     $sql = "SELECT u.user_id, u.full_name, u.email, u.phone_number, u.created_at, up.address, up.date_of_birth
@@ -34,7 +34,7 @@ function ambil_pelanggan_by_id($conn, $id) {
     return mysqli_fetch_assoc($query);
 }
 
-function ambil_pesanan_pelanggan($conn, $id) {
+function get_customer_orders($conn, $id) {
     // LEFT JOIN payments supaya pesanan yang belum punya baris pembayaran tetap tampil.
     $id = (int)$id;
     $sql = "SELECT o.order_id, o.order_date, o.total_amount, o.status, p.payment_status

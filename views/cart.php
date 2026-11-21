@@ -13,7 +13,7 @@ require_once __DIR__ . "/../config/database.php";
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../components/landing/layout.php";
 
-cek_login();
+require_login();
 
 // Isi keranjang disimpan di session; inisialisasi agar foreach di bawah aman saat pertama kali dibuka.
 if (!isset($_SESSION['cart']))    { $_SESSION['cart'] = []; }
@@ -22,11 +22,11 @@ if (!isset($_SESSION['layanan'])) { $_SESSION['layanan'] = []; }
 // Akumulator yang diisi saat me-loop item, lalu dipakai di panel ringkasan kanan.
 $subtotal_produk  = 0;
 $subtotal_layanan = 0;
-$jumlah_produk    = 0;
+$total_products    = 0;
 $jumlah_layanan   = 0;
 
 $activeNav = 'cart';
-atas("Keranjang - Nexatech");
+page_start("Keranjang - Nexatech");
 ?>
 <div class="page-wrap page-wrap-narrow">
 
@@ -60,7 +60,7 @@ atas("Keranjang - Nexatech");
 
                 $subtotal         = $produk['price'] * $jumlah;
                 $subtotal_produk += $subtotal;
-                $jumlah_produk++;
+                $total_products++;
             ?>
                 <article class="cart-item">
                     <div class="cart-thumb">
@@ -141,7 +141,7 @@ atas("Keranjang - Nexatech");
             <?php } ?>
 
             <?php // Empty state hanya muncul kalau tidak ada produk maupun layanan sama sekali. ?>
-            <?php if ($jumlah_produk == 0 && $jumlah_layanan == 0) { ?>
+            <?php if ($total_products == 0 && $jumlah_layanan == 0) { ?>
                 <div class="empty-state">
                     <span class="empty-state-icon"><i data-lucide="shopping-bag" class="w-5 h-5"></i></span>
                     <h3 class="empty-state-title">Keranjang masih kosong</h3>
@@ -183,9 +183,9 @@ atas("Keranjang - Nexatech");
                 <div class="th-card-head">
                     <div>
                         <h2 class="th-card-title">Ringkasan pesanan</h2>
-                        <p class="th-card-sub"><?php echo $jumlah_produk; ?> produk &bull; <?php echo $jumlah_layanan; ?> layanan</p>
+                        <p class="th-card-sub"><?php echo $total_products; ?> produk &bull; <?php echo $jumlah_layanan; ?> layanan</p>
                     </div>
-                    <span class="th-badge th-badge-blue"><?php echo $jumlah_produk + $jumlah_layanan; ?> item</span>
+                    <span class="th-badge th-badge-blue"><?php echo $total_products + $jumlah_layanan; ?> item</span>
                 </div>
 
                 <div class="summary-list">
@@ -245,6 +245,6 @@ atas("Keranjang - Nexatech");
     </div>
 </div>
 <?php
-bawah();
+page_end();
 mysqli_close($conn);
 ?>

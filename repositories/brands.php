@@ -7,7 +7,7 @@
  * Relasi banyak-ke-banyak disimpan di tabel pivot category_brands.
  */
 
-function ambil_brands($conn) {
+function get_brands($conn) {
     $query = mysqli_query($conn, "SELECT * FROM brands ORDER BY brand_name ASC");
     $data = [];
     while ($row = mysqli_fetch_assoc($query)) {
@@ -16,7 +16,7 @@ function ambil_brands($conn) {
     return $data;
 }
 
-function ambil_brands_by_category($conn, $category_id) {
+function get_brands_by_category($conn, $category_id) {
     $category_id = (int)$category_id;
     // JOIN ke pivot category_brands karena satu brand bisa dimiliki beberapa kategori.
     $sql = "SELECT b.*
@@ -32,7 +32,7 @@ function ambil_brands_by_category($conn, $category_id) {
     return $data;
 }
 
-function ambil_brand_by_slug($conn, $slug) {
+function get_brand_by_slug($conn, $slug) {
     $slug = trim($slug);
     if ($slug === "") {
         return null;
@@ -51,7 +51,7 @@ function ambil_brand_by_slug($conn, $slug) {
  * Mengambil semua kategori beserta brand-nya.
  * Hasil: [ ['category_id' => 1, ..., 'brands' => [ ['brand_id'=>...], ... ]], ... ]
  */
-function ambil_kategori_dengan_brand($conn) {
+function get_categories_with_brands($conn) {
     $sql = "SELECT c.*, b.brand_id, b.brand_name, b.brand_slug
             FROM categories c
             LEFT JOIN category_brands cb ON c.category_id = cb.category_id
@@ -88,9 +88,9 @@ function ambil_kategori_dengan_brand($conn) {
 /**
  * Mengambil kategori yang memiliki brand tertentu.
  */
-function ambil_kategori_by_brand($conn, $slug) {
+function get_categories_by_brand($conn, $slug) {
     // Cari brand lebih dulu untuk mendapatkan brand_id, lalu ambil kategori yang terhubung di pivot.
-    $brand = ambil_brand_by_slug($conn, $slug);
+    $brand = get_brand_by_slug($conn, $slug);
     if (!$brand) {
         return [];
     }

@@ -11,7 +11,7 @@ session_start();
 require_once __DIR__ . "/../repositories/auth.php";
 require_once __DIR__ . "/../components/landing/layout.php";
 
-cek_login();
+require_login();
 
 // Kalau tidak ada data pesanan, balik ke beranda
 // Session ini diisi actions/payment.php setelah pembayaran diproses.
@@ -23,7 +23,7 @@ if (!isset($_SESSION['pesanan'])) {
 $pesanan = $_SESSION['pesanan'];
 
 $activeNav = 'cart';
-atas("Pembayaran Berhasil - Nexatech");
+page_start("Pembayaran Berhasil - Nexatech");
 ?>
 
 <div class="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
@@ -86,4 +86,4 @@ atas("Pembayaran Berhasil - Nexatech");
         </div>
     </div>
 </div>
-<?php bawah(); ?>
+<?php page_end(); ?>

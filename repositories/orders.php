@@ -6,7 +6,7 @@
  * fungsi update status pesanan dan status pembayaran. Dengan memusatkan query
  * di sini, action admin cukup memanggil fungsi dan view tinggal mencetak data.
  */
-function ambil_pesanan($conn) {
+function get_orders($conn) {
     // JOIN users untuk identitas pemesan; LEFT JOIN payments karena pembayaran bisa belum dibuat.
     $sql = "SELECT o.order_id, o.order_date, o.total_amount, o.status, u.full_name, u.email, p.payment_method, p.payment_status
             FROM orders o
@@ -21,7 +21,7 @@ function ambil_pesanan($conn) {
     return $data;
 }
 
-function ambil_pesanan_by_id($conn, $id) {
+function get_order_by_id($conn, $id) {
     // $id sudah di-cast ke int, jadi aman disisipkan langsung ke WHERE.
     $id = (int)$id;
     $sql = "SELECT o.order_id, o.order_date, o.total_amount, o.status, u.full_name, u.email, u.phone_number, p.payment_method, p.payment_status
@@ -33,7 +33,7 @@ function ambil_pesanan_by_id($conn, $id) {
     return mysqli_fetch_assoc($query);
 }
 
-function ambil_item_pesanan($conn, $id) {
+function get_order_items($conn, $id) {
     // Ambil item beserta nama produk untuk halaman detail pesanan admin.
     $id = (int)$id;
     $sql = "SELECT oi.quantity, oi.unit_price, p.product_name
@@ -48,7 +48,7 @@ function ambil_item_pesanan($conn, $id) {
     return $data;
 }
 
-function ubah_status_pesanan($conn, $id, $status) {
+function update_order_status($conn, $id, $status) {
     // Prepared statement: status berasal dari form admin dan diperlakukan sebagai string.
     $id = (int)$id;
     $stmt = mysqli_prepare($conn, "UPDATE orders SET status=? WHERE order_id=?");
@@ -58,7 +58,7 @@ function ubah_status_pesanan($conn, $id, $status) {
     return $ok;
 }
 
-function ubah_status_bayar($conn, $id, $status) {
+function update_payment_status($conn, $id, $status) {
     $id = (int)$id;
     $stmt = mysqli_prepare($conn, "UPDATE payments SET payment_status=? WHERE order_id=?");
     mysqli_stmt_bind_param($stmt, "si", $status, $id);

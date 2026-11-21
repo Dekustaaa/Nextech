@@ -2,11 +2,11 @@
 /**
  * Query autentikasi dan guard akses.
  *
- * Berisi pencarian user, registrasi, perubahan akun, serta cek_login() dan
- * cek_admin() yang dipakai banyak action. SQL dan aturan akses dikumpulkan di
+ * Berisi pencarian user, registrasi, perubahan akun, serta require_login() dan
+ * require_admin() yang dipakai banyak action. SQL dan aturan akses dikumpulkan di
  * sini agar tidak diduplikasi di handler maupun view.
  */
-function ambil_user_by_email($conn, $email) {
+function get_user_by_email($conn, $email) {
     // Email unik, jadi LIMIT 1 cukup. Placeholder "?" membuat input tidak masuk mentah ke SQL.
     $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE email=? LIMIT 1");
     mysqli_stmt_bind_param($stmt, "s", $email);
@@ -17,7 +17,7 @@ function ambil_user_by_email($conn, $email) {
     return $row;
 }
 
-function daftar_user($conn, $nama, $email, $password) {
+function register_user($conn, $nama, $email, $password) {
     // role_id = 2 adalah pelanggan. Password disimpan sesuai input karena data contoh belum memakai hashing.
     $stmt = mysqli_prepare($conn, "INSERT INTO users (role_id, full_name, email, password_hash) VALUES (2, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, "sss", $nama, $email, $password);
@@ -34,13 +34,13 @@ function daftar_user($conn, $nama, $email, $password) {
     return $ok;
 }
 
-function ambil_user_by_id($conn, $id) {
+function get_user_by_id($conn, $id) {
     $id = (int)$id;
     $query = mysqli_query($conn, "SELECT * FROM users WHERE user_id = $id");
     return mysqli_fetch_assoc($query);
 }
 
-function ubah_akun($conn, $id, $nama, $email, $telepon, $password) {
+function update_account($conn, $id, $nama, $email, $telepon, $password) {
     $id = (int)$id;
     // Password opsional: jika kosong, query tidak menyertakan kolom password_hash.
     if ($password != "") {
@@ -55,7 +55,7 @@ function ubah_akun($conn, $id, $nama, $email, $telepon, $password) {
     return $ok;
 }
 
-function cek_admin() {
+function require_admin() {
     // Guard admin: session wajib punya user_id dan role_id = 1.
     if (!isset($_SESSION["user_id"]) || ($_SESSION["role_id"] ?? 0) != 1) {
         // Redirect + exit menghentikan action yang memanggil fungsi ini.
@@ -64,7 +64,7 @@ function cek_admin() {
     }
 }
 
-function cek_login() {
+function require_login() {
     // Guard login: cukup memastikan user_id ada; role tidak dibatasi di sini.
     if (!isset($_SESSION["user_id"])) {
         // Flash message menjelaskan alasan user diarahkan ke halaman login.

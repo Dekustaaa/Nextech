@@ -7,7 +7,7 @@
  * produk dikumpulkan di sini agar halaman katalog, rekomendasi, dan admin
  * memakai aturan data yang sama.
  */
-function ambil_produk($conn) {
+function get_products($conn) {
     // LEFT JOIN dipakai agar produk tetap tampil walau kategori/brand-nya kosong.
     $sql = "SELECT products.*, categories.category_name, categories.image, categories.cat_description,
                    brands.brand_name, brands.brand_slug
@@ -23,7 +23,7 @@ function ambil_produk($conn) {
     return $data;
 }
 
-function ambil_produk_by_id($conn, $id) {
+function get_product_by_id($conn, $id) {
     // ID hasil cast dipakai untuk halaman detail produk dan pengambilan item cart.
     $id = (int)$id;
     $sql = "SELECT products.*, categories.category_name, categories.image, categories.cat_description,
@@ -36,10 +36,10 @@ function ambil_produk_by_id($conn, $id) {
     return mysqli_fetch_assoc($query);
 }
 
-function ambil_produk_by_keyword($conn, $keyword) {
+function get_products_by_keyword($conn, $keyword) {
     $keyword = trim($keyword);
     if ($keyword === "") {
-        return ambil_produk($conn);
+        return get_products($conn);
     }
     // %...% membuat pencarian bersifat "mengandung"; empat placeholder mewakili nama, deskripsi, kategori, dan brand.
     $like = "%" . $keyword . "%";
@@ -61,7 +61,7 @@ function ambil_produk_by_keyword($conn, $keyword) {
     return $data;
 }
 
-function ambil_produk_by_kategori($conn, $kategori, $brand_slug = "") {
+function get_products_by_category($conn, $kategori, $brand_slug = "") {
     $kategori = (int)$kategori;
     $brand_slug = trim($brand_slug);
 
@@ -93,7 +93,7 @@ function ambil_produk_by_kategori($conn, $kategori, $brand_slug = "") {
     return $data;
 }
 
-function hapus_produk($conn, $id) {
+function delete_product($conn, $id) {
     $id = (int)$id;
     $stmt = mysqli_prepare($conn, "DELETE FROM products WHERE product_id=?");
     mysqli_stmt_bind_param($stmt, "i", $id);
@@ -102,7 +102,7 @@ function hapus_produk($conn, $id) {
     return $ok;
 }
 
-function ambil_produk_by_budget($conn, $budget, $kategori) {
+function get_products_by_budget($conn, $budget, $kategori) {
     // Filter harga maksimum; kategori 0 berarti semua kategori. Urutkan termahal agar rekomendasi mendekati budget.
     $budget = (int)$budget;
     $kategori = (int)$kategori;
@@ -119,7 +119,7 @@ function ambil_produk_by_budget($conn, $budget, $kategori) {
     return $data;
 }
 
-function ambil_produk_termurah($conn, $kategori) {
+function get_cheapest_products($conn, $kategori) {
     // LIMIT 1 setelah ORDER BY price ASC mengambil produk paling murah, dengan filter kategori opsional.
     $kategori = (int)$kategori;
     if ($kategori > 0) {
@@ -131,7 +131,7 @@ function ambil_produk_termurah($conn, $kategori) {
     return mysqli_fetch_assoc($query);
 }
 
-function simpan_produk($conn, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge) {
+function save_product($conn, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge) {
     // Tipe bind "isiisss" mengikuti urutan kolom: int, string, int, int, string, string, string.
     $kategori = (int)$kategori;
     $harga = (int)$harga;
@@ -143,8 +143,8 @@ function simpan_produk($conn, $nama, $kategori, $harga, $stok, $deskripsi, $url,
     return $ok;
 }
 
-function ubah_produk($conn, $id, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge) {
-    // Sama seperti simpan_produk, tetapi ada tambahan id integer di akhir untuk WHERE.
+function update_product($conn, $id, $nama, $kategori, $harga, $stok, $deskripsi, $url, $badge) {
+    // Sama seperti save_product, tetapi ada tambahan id integer di akhir untuk WHERE.
     $id = (int)$id;
     $kategori = (int)$kategori;
     $harga = (int)$harga;

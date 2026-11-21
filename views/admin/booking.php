@@ -4,7 +4,7 @@
  *
  * Memuat layanan (dropdown), teknisi untuk pilihan awal, semua teknisi untuk
  * form update per baris, serta seluruh booking dengan join nama layanan dan
- * teknisi. Form kiri membuat booking baru ke actions/simpan_booking.php;
+ * teknisi. Form kiri membuat booking baru ke actions/save_booking.php;
  * form di tiap baris mengubah teknisi/status lewat actions/update_booking.php.
  */
 session_start();
@@ -16,11 +16,11 @@ require_once __DIR__ . "/../../repositories/auth.php";
 require_once __DIR__ . "/../../components/admin/layout_admin.php";
 
 // Halaman admin: buat booking dan atur teknisi/status tiap booking.
-cek_admin();
+require_admin();
 
 // Layanan untuk dropdown form booking baru, teknisi tersedia untuk pilihan awal.
-$layanan = ambil_services($conn);
-$teknisi = ambil_teknisi($conn);
+$layanan = get_services($conn);
+$teknisi = get_technicians($conn);
 
 // Daftar teknisi lengkap dipakai pada select "atur" di setiap baris booking.
 $query = mysqli_query($conn, "SELECT * FROM technicians ORDER BY technician_name ASC");
@@ -43,7 +43,7 @@ while ($row = mysqli_fetch_assoc($query)) {
 $pesan = $_SESSION["admin_pesan"] ?? "";
 unset($_SESSION["admin_pesan"]);
 
-admin_atas("Booking Teknisi", "Buat booking baru dan atur teknisi + statusnya.", "booking.php");
+admin_start("Booking Teknisi", "Buat booking baru dan atur teknisi + statusnya.", "booking.php");
 ?>
 <?php if ($pesan != "") { ?>
     <!-- Notifikasi hasil simpan/update booking. -->
@@ -52,7 +52,7 @@ admin_atas("Booking Teknisi", "Buat booking baru dan atur teknisi + statusnya.",
     </div>
 <?php } ?>
 <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-    <form action="/PWL-SAS/actions/simpan_booking.php" method="POST" class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
+    <form action="/PWL-SAS/actions/save_booking.php" method="POST" class="xl:col-span-4 bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
         <!-- Form booking baru; teknisi opsional (0 = pilih otomatis). -->
         <h2 class="font-bold text-slate-900">Buat booking</h2>
         <div>
@@ -67,7 +67,7 @@ admin_atas("Booking Teknisi", "Buat booking baru dan atur teknisi + statusnya.",
             <label class="block text-xs text-slate-500 mb-1">Layanan</label>
             <select name="service_id" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500">
                 <option value="">-- Pilih --</option>
-                <?php // Layanan diambil dari tabel services lewat ambil_services(). ?>
+                <?php // Layanan diambil dari tabel services lewat get_services(). ?>
                 <?php foreach ($layanan as $s) { ?>
                     <option value="<?php echo $s["service_id"]; ?>"><?php echo htmlspecialchars($s["service_name"]); ?></option>
                 <?php } ?>
@@ -130,7 +130,7 @@ admin_atas("Booking Teknisi", "Buat booking baru dan atur teknisi + statusnya.",
                             </td>
                             <td class="py-3 text-slate-600"><?php echo htmlspecialchars($b["technician_name"] ?? "Belum ada"); ?></td>
                             <td class="py-3">
-                                <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo dash_warna_status($b["status"]); ?>">
+                                <span class="text-[11px] font-semibold px-3 py-1.5 rounded-full <?php echo get_status_color($b["status"]); ?>">
                                     <?php echo htmlspecialchars($b["status"]); ?>
                                 </span>
                             </td>
@@ -161,4 +161,4 @@ admin_atas("Booking Teknisi", "Buat booking baru dan atur teknisi + statusnya.",
         </div>
     </div>
 </div>
-<?php admin_bawah(); ?>
+<?php admin_end(); ?>

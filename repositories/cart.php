@@ -7,7 +7,7 @@
  * total produk dan layanan untuk halaman cart/checkout. Pemisahan ini menjaga
  * view tetap bebas dari query dan perhitungan.
  */
-function siapkan_cart() {
+function init_cart() {
     // Pastikan kedua key session ada supaya loop berikutnya tidak error saat cart masih kosong.
     if (!isset($_SESSION["cart"])) {
         $_SESSION["cart"] = [];
@@ -17,12 +17,12 @@ function siapkan_cart() {
     }
 }
 
-function ambil_isi_cart($conn) {
+function get_cart_items($conn) {
     $isi = [];
     foreach ($_SESSION["cart"] as $id => $jumlah) {
         $id = (int)$id;
         // Ambil ulang produk dari database; jika sudah dihapus, lewati agar cart tidak menampilkan data rusak.
-        $produk = ambil_produk_by_id($conn, $id);
+        $produk = get_product_by_id($conn, $id);
         if (!$produk) {
             continue;
         }
@@ -42,7 +42,7 @@ function ambil_isi_cart($conn) {
     foreach ($_SESSION["layanan"] as $id => $jumlah) {
         $id = (int)$id;
         // Layanan diperlakukan sama seperti produk: detail dan harga selalu diambil ulang dari database.
-        $layanan = ambil_service_by_id($conn, $id);
+        $layanan = get_service_by_id($conn, $id);
         if (!$layanan) {
             continue;
         }
@@ -61,7 +61,7 @@ function ambil_isi_cart($conn) {
     return $isi;
 }
 
-function hitung_cart($isi) {
+function calculate_cart($isi) {
     $produk = 0;
     $layanan = 0;
     $jml_produk = 0;

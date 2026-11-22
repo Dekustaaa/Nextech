@@ -21,16 +21,11 @@ require_once __DIR__ . "/../../repositories/services.php";
 
 /* ------------------------------------------------------------------
  |  FOTO & PROFIL TAMBAHAN TEKNISI
- |  Tabel technicians hanya menyimpan data dasar, jadi foto, pengalaman,
- |  dan jumlah ulasan dipetakan di sini agar tampilan tetap konsisten.
+ |  Foto utama diambil dari kolom photo_url di tabel technicians. Daftar
+ |  cadangan hanya dipakai jika URL foto di database masih kosong.
+ |  Pengalaman dan jumlah ulasan tetap dipetakan di sini karena belum
+ |  tersedia kolomnya di database.
  * ------------------------------------------------------------------ */
-$foto_teknisi = [
-    1 => "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&q=80",
-    2 => "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=faces&q=80",
-    3 => "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=400&fit=crop&crop=faces&q=80",
-    4 => "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=faces&q=80",
-    5 => "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=faces&q=80",
-];
 $foto_cadangan = [
     "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=faces&q=80",
     "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=faces&q=80",
@@ -54,7 +49,7 @@ while ($row = mysqli_fetch_assoc($query)) {
         'rating'     => (float)$row['rating'],
         'status'     => $row['status'] ?: 'tersedia',
         'online'     => ($row['status'] ?? '') === 'tersedia',
-        'foto'       => $foto_teknisi[$id] ?? $foto_cadangan[($id - 1) % count($foto_cadangan)],
+        'foto'       => !empty($row['photo_url']) ? $row['photo_url'] : $foto_cadangan[($id - 1) % count($foto_cadangan)],
         'pengalaman' => $pengalaman_teknisi[$id] ?? (3 + ($id % 5)),
         'ulasan'     => $ulasan_teknisi[$id] ?? (20 + $id * 7),
     ];
